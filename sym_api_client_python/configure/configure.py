@@ -17,20 +17,6 @@ class SymConfig():
         for k,v in self.data.items():
             print(v)
 
-    #load fields from confg.json into data dictionary on the SymConfig class (RSA)
-    def loadFromRSA(self):
-        with open(self.configFile, "r") as read_file:
-            data = json.load(read_file)
-            self.data['sessionAuthHost'] = 'https://'+ data['sessionAuthHost'] + ':' + str(data['sessionAuthPort'])
-            self.data['keyAuthHost'] = 'https://'+ data['keyAuthHost'] + ':' + str(data['keyAuthPort'])
-            self.data['podHost'] = 'https://'+ data['podHost'] + ':' + str(data['podPort'])
-            self.data['agentHost'] = 'https://'+ data['agentHost'] + ':' + str(data['agentPort'])
-            self.data['botRSAPath'] = data['botRSAPath'] + data['botRSAName']
-            self.data['botUsername'] = data['botUsername']
-            self.data['botEmailAddress'] = data['botEmailAddress']
-            self.data['proxyURL'] = data['proxyURL']
-            self.data['proxyPort'] = data['proxyPort']
-
 
     #load fields from confg.json into data dictionary on the SymConfig class (certificates)
     def loadFromFile(self):
@@ -44,18 +30,22 @@ class SymConfig():
             self.data['botCertName'] = data['botCertName']
             self.data['botCertPassword'] = data['botCertPassword']
             self.data['botEmailAddress'] = data['botEmailAddress']
-            self.data['p.12'] = self.data['botCertPath'] + '.p12'
             self.data['proxyURL'] = data['proxyURL']
             self.data['proxyPort'] = data['proxyPort']
+            self.data['botRSAPath'] = data['botPrivateKeyPath'] + data['botPrivateName']
+            if (self.data['botCertPath'] != None | self.data['botCertPath']!='') 
+                self.data['p.12'] = self.data['botCertPath'] + '.p12'
+            
 
         #take in .p12 certificate and parse through file to use for authentication
         #class returns symphonyCertificate and symphonyKey
         #data['symphonyCertificate'] and data['symphonyKey'] are passed as certificates upon authentication request
-            try:
-                logging.debug('p12 location ---> ' + self.data['p.12'])
-                crypt = Crypt(self.data['p.12'], self.data['botCertPassword'])
-                self.data['symphonyCertificate'], self.data['symphonyKey'] = crypt.p12parse()
+            if(self.data['p.12'] != None)
+                try:
+                    logging.debug('p12 location ---> ' + self.data['p.12'])
+                    crypt = Crypt(self.data['p.12'], self.data['botCertPassword'])
+                    self.data['symphonyCertificate'], self.data['symphonyKey'] = crypt.p12parse()
 
-            except Exception as err:
-                print("Failed to load config file: %s" % err)
-                raise
+                except Exception as err:
+                    print("Failed to load config file: %s" % err)
+                    raise

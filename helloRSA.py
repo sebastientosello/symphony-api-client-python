@@ -15,7 +15,7 @@ def main():
         print('hi')
         #RSA Auth flow: pass path to rsa_config.json file
         configure = SymConfig('sym_api_client_python/resources/rsa_config.json')
-        configure.loadFromRSA()
+        configure.loadFromFile()
         auth = SymBotRSAAuth(configure)
         auth.authenticate()
         #initialize SymBotClient with auth and configure objects
