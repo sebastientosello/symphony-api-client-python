@@ -9,7 +9,7 @@ jobs:
     steps:
       - checkout
       - run:
-            command: python setup.py install
+            command: sudo python setup.py install
             name: install
       - run:
           command: pytest tests
