@@ -8,15 +8,12 @@ jobs:
     executor: python/default
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
       - run:
-          command: python --version
-          name: debug python version
+            command: python setup.py install
+            name: install
       - run:
           command: pytest tests
-          name: Test
+          name: run tests
 
 workflows:
   main:
